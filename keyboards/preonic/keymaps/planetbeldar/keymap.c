@@ -17,10 +17,35 @@
 #include QMK_KEYBOARD_H
 #include "muse.h"
 
+#define XXXXXXX KC_NO
+
+enum unicode_names {
+  A_RING_L,
+  A_RING_U,
+  A_DIA_L,
+  A_DIA_U,
+  O_DIA_L,
+  O_DIA_U
+};
+
+const uint32_t PROGMEM unicode_map[] = {
+  [A_RING_L] = 0x00E5,
+  [A_RING_U] = 0x00C5,
+  [A_DIA_L] = 0x00E4,
+  [A_DIA_U] = 0x00C4,
+  [O_DIA_L] = 0x00F6,
+  [O_DIA_U] = 0x00D6
+};
+
+#define A_RING  XP(A_RING_L, A_RING_U)
+#define A_DIA   XP(A_DIA_L, A_DIA_U)
+#define O_DIA   XP(O_DIA_L, O_DIA_U)
+
 enum preonic_layers {
   _QWERTY,
   _LOWER,
   _RAISE,
+  _SYMB,
   _NAVIGATION,
   _ADJUST
 };
@@ -29,9 +54,11 @@ enum preonic_keycodes {
   QWERTY = SAFE_RANGE,
   LOWER,
   RAISE,
+  SYMB,
   NAVIGATION,
   BACKLIT
 };
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -45,7 +72,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Navi | Ctrl | Alt  | GUI  |Lower |    Space    |Raise | KC_RALT |   |      |  Fn  |
+ * | Navi | Ctrl | Alt  | GUI  |Lower |    Space    |Raise | Symb |      |      |  Fn  |
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_preonic_grid( \
@@ -53,7 +80,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,         KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,  \
   CTL_T(KC_ESC),  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, \
   KC_LSFT,        KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT,  \
-  MO(_NAVIGATION),KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_RALT, _______, _______, _______ \
+  MO(_NAVIGATION), KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   MO(_SYMB), _______, _______, _______ \
 ),
 
 /* Lower
@@ -113,11 +140,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_NAVIGATION] = LAYOUT_preonic_grid( \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,  KC_RIGHT, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, XXXXXXX, _______, \
+  _______, _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,  KC_RIGHT, XXXXXXX, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
 ),
+
+/* International symbols
+ * ,-----------------------------------------------------------------------------------.
+ * |      |      |      |      |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      |      |  å   |      |      |      |      |      |      |  ö   |      |      |
+ * |------+------+------+------+------+-------------+------+------+------+------+------|
+ * |      |  ä   |      |      |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |             |      |      |      |      |      |
+ * `-----------------------------------------------------------------------------------'
+ */
+[_SYMB] = LAYOUT_preonic_grid( \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, A_RING,  _______, _______, _______, _______, _______, _______, O_DIA,   _______, _______, \
+  _______, A_DIA,   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
+),  
 
 /* Adjust (Lower + Raise)
  * ,-----------------------------------------------------------------------------------.
@@ -135,11 +183,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ADJUST] = LAYOUT_preonic_grid( \
   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  \
   _______, RESET,   DEBUG,   _______, _______, _______, _______, TERM_ON, TERM_OFF,_______, _______, KC_DEL,  \
-  _______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  _______, _______,  _______, _______, \
+  _______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  _______, _______, _______, _______, \
   _______, MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
+  _______, _______, _______, _______, _______, _______, _______, _______, _______, UC_M_LN, UC_M_WC, UC_M_OS  \
 )
-
 
 };
 
@@ -178,12 +225,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               backlight_step();
             #endif
             #ifdef __AVR__
-            PORTE &= ~(1<<6);
+            writePinLow(E6);
             #endif
           } else {
             unregister_code(KC_RSFT);
             #ifdef __AVR__
-            PORTE |= (1<<6);
+            writePinHigh(E6);
             #endif
           }
           return false;
@@ -224,41 +271,44 @@ void encoder_update_user(uint8_t index, bool clockwise) {
   }
 }
 
-void dip_update(uint8_t index, bool active) {
-  switch (index) {
-    case 0:
-      if (active) {
-        layer_on(_ADJUST);
-      } else {
-        layer_off(_ADJUST);
-      }
-      break;
-    case 1:
-      if (active) {
-        muse_mode = true;
-      } else {
-        muse_mode = false;
-        #ifdef AUDIO_ENABLE
-          stop_all_notes();
-        #endif
-      }
-   }
+void dip_switch_update_user(uint8_t index, bool active) {
+    switch (index) {
+        case 0:
+            if (active) {
+                layer_on(_ADJUST);
+            } else {
+                layer_off(_ADJUST);
+            }
+            break;
+        case 1:
+            if (active) {
+                muse_mode = true;
+            } else {
+                muse_mode = false;
+            }
+    }
 }
 
+
 void matrix_scan_user(void) {
-  #ifdef AUDIO_ENABLE
+#ifdef AUDIO_ENABLE
     if (muse_mode) {
-      if (muse_counter == 0) {
-        uint8_t muse_note = muse_offset + SCALE[muse_clock_pulse()];
-        if (muse_note != last_muse_note) {
-          stop_note(compute_freq_for_midi_note(last_muse_note));
-          play_note(compute_freq_for_midi_note(muse_note), 0xF);
-          last_muse_note = muse_note;
+        if (muse_counter == 0) {
+            uint8_t muse_note = muse_offset + SCALE[muse_clock_pulse()];
+            if (muse_note != last_muse_note) {
+                stop_note(compute_freq_for_midi_note(last_muse_note));
+                play_note(compute_freq_for_midi_note(muse_note), 0xF);
+                last_muse_note = muse_note;
+            }
         }
-      }
-      muse_counter = (muse_counter + 1) % muse_tempo;
+        muse_counter = (muse_counter + 1) % muse_tempo;
+    } else {
+        if (muse_counter) {
+            stop_all_notes();
+            muse_counter = 0;
+        }
     }
-  #endif
+#endif
 }
 
 bool music_mask_user(uint16_t keycode) {
@@ -270,3 +320,11 @@ bool music_mask_user(uint16_t keycode) {
       return true;
   }
 }
+
+// Runs just one time when the keyboard initializes.
+void matrix_init_user(void) {
+    //set_unicode_input_mode(UC_LNX); // Linux
+    //set_unicode_input_mode(UC_OSX); // Mac OSX
+    //set_unicode_input_mode(UC_WIN); // Windows (with registry key, see wiki)
+    set_unicode_input_mode(UC_WINC); // Windows (with WinCompose, see wiki)
+};

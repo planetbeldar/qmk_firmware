@@ -8,6 +8,11 @@
                                   SONG(COLEMAK_SOUND), \
                                   SONG(DVORAK_SOUND) \
                                 }
+
+    #define UNICODE_SONG_OSX  SONG(MARIO_MUSHROOM)  
+    #define UNICODE_SONG_LNX  SONG(TERRAS_THEME)
+    #define UNICODE_SONG_WINC SONG(FF_PRELUDE)
+
 #endif
 
 #define MUSIC_MASK (keycode != KC_NO)
@@ -33,5 +38,8 @@
 */
 //#define MIDI_ADVANCED
 
+
 /* override number of MIDI tone keycodes (each octave adds 12 keycodes and allocates 12 bytes) */
 //#define MIDI_TONE_KEYCODE_OCTAVES 2
+
+#define UNICODE_SELECTED_MODES UC_OSX, UC_WINC, UC_LNX
