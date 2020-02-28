@@ -32,6 +32,7 @@ enum my_keycodes {
 };
 
 #define LT_ADJUST_TAB LT(_ADJUST, KC_TAB)
+#define MT_ALT_SPACE  MT(MOD_LALT, KC_SPC)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -44,17 +45,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    * |-------------------------------------------------------------------------+
    * | Shift |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |Sh/En|
    * |-------------------------------------------------------------------------+
-   * | NAV | Ctrl| Alt | Gui |LOWER |   Space   | RAISE|AltGr| Down|  Up |Right|
+   * | NAV | Ctrl| Alt | Gui |LOWER | Alt/Space | RAISE|AltGr| Down|  Up |Right|
    * `-------------------------------------------------------------------------'
   */
 [_QWERTY] = LAYOUT(
   LT_ADJUST_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
   LCTL_T(KC_ESC), KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
   KC_LSFT,        KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_SFTENT,
-  NAVIGATION,     KC_LCTL, KC_LALT, KC_LGUI, LOWER,      KC_SPC,        RAISE,   KC_RALT, KC_DOWN, KC_UP,   KC_RGHT
+  NAVIGATION,     KC_LCTL, KC_LALT, KC_LGUI, LOWER,    MT_ALT_SPACE,    RAISE,   KC_RALT, _______, _______, NAVIGATION
 ),
 
-  /* Lower Layer 
+  /* Lower Layer
    * ,-------------------------------------------------------------------------.
    * |   ~  |  !  |  @  |  #  |  $  |  %  |  ^  |  &  |  *  |  (  |  )  |Bspace|
    * |-------------------------------------------------------------------------+
@@ -158,7 +159,7 @@ void process_layer_change(enum my_layers layer, keyrecord_t *record) {
     update_tri_layer(_LOWER, _RAISE, _TRI);
   }
 }
- 
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch(keycode) {
     case LOWER:
@@ -174,6 +175,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       process_layer_change(_NAVIGATION, record);
       return false;
     default:
-      return true; 
+      return true;
   }
 }
