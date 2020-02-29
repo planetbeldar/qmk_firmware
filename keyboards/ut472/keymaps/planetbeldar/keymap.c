@@ -160,6 +160,15 @@ void process_layer_change(enum my_layers layer, keyrecord_t *record) {
   }
 }
 
+bool get_ignore_mod_tap_interrupt(uint16_t keycode) {
+  switch (keycode) {
+    case MT_ALT_SPACE:
+      return true;
+    default:
+      return false;
+    }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch(keycode) {
     case LOWER:
